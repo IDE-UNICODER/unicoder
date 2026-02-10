@@ -500,7 +500,25 @@ export async function main(argv: string[]): Promise<void> {
 			//    focusing issues when the new instance only sends data to a previous instance and then closes.
 			const spawnArgs = ['-n', '-g'];
 			// -a opens the given application.
-			spawnArgs.push('-a', process.execPath); // -a: opens a specific application
+			// When --proto is passed, launch the MiniApp instead of the main app
+			let appToLaunch = process.execPath;
+			if (args['proto']) {
+				const miniAppName = `SeaCode - Insiders`;
+				// process.execPath is e.g. /Applications/Code.app/Contents/MacOS/Electron
+				// MiniApp is at /Applications/Code.app/Contents/Applications/<MiniApp>.app
+				const contentsPath = dirname(dirname(process.execPath));
+				const miniAppPath = join(contentsPath, 'Applications', `${miniAppName}.app`);
+				if (existsSync(miniAppPath)) {
+					appToLaunch = miniAppPath;
+					// Filter out --proto from argv
+					argv = argv.filter(arg => arg !== '--proto');
+				} else {
+					console.error(`MiniApp not found at: ${miniAppPath}`);
+					console.error('The --proto flag requires the MiniApp to be installed.');
+					return;
+				}
+			}
+			spawnArgs.push('-a', appToLaunch);
 
 			if (args.verbose || args.status) {
 				spawnArgs.push('--wait-apps'); // `open --wait-apps`: blocks until the launched app is closed (even if they were already running)

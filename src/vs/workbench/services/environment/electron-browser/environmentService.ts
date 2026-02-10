@@ -52,6 +52,9 @@ export interface INativeWorkbenchEnvironmentService extends IBrowserWorkbenchEnv
 	readonly crashReporterDirectory?: string;
 	readonly crashReporterId?: string;
 
+	// --- Embedded App
+	readonly isEmbeddedApp: boolean;
+
 	// --- Editors to --wait
 	readonly filesToWait?: IPathsToWaitFor;
 }
@@ -72,6 +75,9 @@ export class NativeWorkbenchEnvironmentService extends AbstractNativeEnvironment
 
 	@memoize
 	get isPortable() { return this.configuration.isPortable; }
+
+	@memoize
+	get isEmbeddedApp() { return this.configuration.isEmbeddedApp ?? false; }
 
 	@memoize
 	get remoteAuthority() { return this.configuration.remoteAuthority; }

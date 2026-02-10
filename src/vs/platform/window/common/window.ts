@@ -447,6 +447,7 @@ export interface INativeWindowConfiguration extends IWindowConfiguration, Native
 
 	workspace?: IWorkspaceIdentifier | ISingleFolderWorkspaceIdentifier;
 	isAgentSessionsWindow?: boolean;
+	isEmbeddedApp?: boolean;
 
 	isInitialStartup?: boolean;
 	logLevel: LogLevel;

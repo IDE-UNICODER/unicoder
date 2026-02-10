@@ -24,6 +24,7 @@ import { Action2, registerAction2 } from '../../../../platform/actions/common/ac
 import { ChatContextKeys } from '../../chat/common/actions/chatContextKeys.js';
 import { IWorkspaceContextService, WorkbenchState } from '../../../../platform/workspace/common/workspace.js';
 import { IChatEntitlementService } from '../../../services/chat/common/chatEntitlementService.js';
+import { IWorkbenchEnvironmentService } from '../../../services/environment/common/environmentService.js';
 
 // Registration priority
 const agentSessionsWelcomeInputTypeId = 'workbench.editors.agentSessionsWelcomeInput';
@@ -125,7 +126,8 @@ class AgentSessionsWelcomeRunnerContribution extends Disposable implements IWork
 		@IContextKeyService private readonly contextKeyService: IContextKeyService,
 		@IStorageService private readonly storageService: IStorageService,
 		@IWorkspaceContextService private readonly workspaceContextService: IWorkspaceContextService,
-		@IChatEntitlementService private readonly chatEntitlementService: IChatEntitlementService
+		@IChatEntitlementService private readonly chatEntitlementService: IChatEntitlementService,
+		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService
 	) {
 		super();
 		this.run();
@@ -140,8 +142,11 @@ class AgentSessionsWelcomeRunnerContribution extends Disposable implements IWork
 		// Get startup editor configuration
 		const startupEditor = this.configurationService.getValue<string>('workbench.startupEditor');
 
-		// Only proceed if configured to show agent sessions welcome page
-		if (startupEditor !== 'agentSessionsWelcomePage') {
+		// Show agent sessions welcome page if configured OR if running as embedded app (MiniApp)
+		const shouldShowAgentSessions = startupEditor === 'agentSessionsWelcomePage' || this.environmentService.isEmbeddedApp;
+
+		// Only proceed if we should show agent sessions welcome page
+		if (!shouldShowAgentSessions) {
 			return;
 		}
 

@@ -18,6 +18,18 @@ if (pkgObj['BUILD_INSERT_PACKAGE_CONFIGURATION']) {
 	pkgObj = require('../package.json'); // Running out of sources
 }
 
+// Load sub files for embedded apps
+if ((process as unknown as { isEmbeddedApp?: boolean }).isEmbeddedApp) {
+	try {
+		const productSubObj = require('../product.sub.json');
+		productObj = Object.assign(productObj, productSubObj);
+	} catch (error) { /* ignore */ }
+	try {
+		const pkgSubObj = require('../package.sub.json');
+		pkgObj = Object.assign(pkgObj, pkgSubObj);
+	} catch (error) { /* ignore */ }
+}
+
 let productOverridesObj = {};
 if (process.env['VSCODE_DEV']) {
 	try {

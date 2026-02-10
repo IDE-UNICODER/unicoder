@@ -20,6 +20,8 @@ import { getUNCHost, addUNCHostToAllowlist } from './vs/base/node/unc.js';
 import { INLSConfiguration } from './vs/nls.js';
 import { NativeParsedArgs } from './vs/platform/environment/common/argv.js';
 
+console.log(`!!! Starting Main Process ... ${(app as unknown as { isEmbeddedApp?: boolean }).isEmbeddedApp} !!!`);
+
 perf.mark('code/didStartMain');
 
 perf.mark('code/willLoadMainBundle', {

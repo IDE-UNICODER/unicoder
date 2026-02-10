@@ -46,7 +46,11 @@ function doGetUserDataPath(cliArgs: NativeParsedArgs, productName: string): stri
 
 	// 0. Running out of sources has a fixed productName
 	if (process.env['VSCODE_DEV']) {
-		productName = 'code-oss-dev';
+		if ((process as unknown as { isEmbeddedApp?: boolean }).isEmbeddedApp) {
+			productName = 'sea-code-dev';
+		} else {
+			productName = 'code-oss-dev';
+		}
 	}
 
 	// 1. Support portable mode

@@ -128,8 +128,9 @@ export class DesktopMain extends Disposable {
 		// (fixes https://github.com/microsoft/vscode/issues/187982)
 		this.applyWindowZoomLevel(services.configurationService);
 
-		// Create Workbench - use AgentSessionsWorkbench for agent sessions workspace
-		const workbench = services.configurationService.getWorkspace().isAgentSessionsWorkspace
+		// Create Workbench - use AgentSessionsWorkbench for agent sessions workspace or embedded app
+		const useAgentSessionsWorkbench = services.configurationService.getWorkspace().isAgentSessionsWorkspace || services.environmentService.isEmbeddedApp;
+		const workbench = useAgentSessionsWorkbench
 			? new AgentSessionsWorkbench(mainWindow.document.body, {
 				extraClasses: this.getExtraClasses(),
 			}, services.serviceCollection, services.logService)
@@ -175,7 +176,7 @@ export class DesktopMain extends Disposable {
 		this._register(workbench.onDidShutdown(() => this.dispose()));
 	}
 
-	private async initServices(): Promise<{ serviceCollection: ServiceCollection; logService: ILogService; storageService: NativeWorkbenchStorageService; configurationService: WorkspaceService; isAgentSessionsWorkspace: boolean }> {
+	private async initServices(): Promise<{ serviceCollection: ServiceCollection; logService: ILogService; storageService: NativeWorkbenchStorageService; configurationService: WorkspaceService; environmentService: INativeWorkbenchEnvironmentService }> {
 		const serviceCollection = new ServiceCollection();
 
 
@@ -361,10 +362,7 @@ export class DesktopMain extends Disposable {
 		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-		// Check if this is an agent sessions workspace
-		const isAgentSessionsWorkspace = !!configurationService.getWorkspace().isAgentSessionsWorkspace;
-
-		return { serviceCollection, logService, storageService, configurationService, isAgentSessionsWorkspace };
+		return { serviceCollection, logService, storageService, configurationService, environmentService };
 	}
 
 	private resolveWorkspaceIdentifier(environmentService: INativeWorkbenchEnvironmentService): IAnyWorkspaceIdentifier {

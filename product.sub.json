@@ -1,0 +1,8 @@
+{
+	"nameShort": "SeaCode - Insiders",
+	"nameLong": "SeaCode - Insiders",
+	"applicationName": "sea-code-insiders",
+	"dataFolderName": ".sea-code-insiders",
+	"darwinBundleIdentifier": "com.microsoft.SeaCodeInsiders",
+	"urlProtocol": "sea-code-insiders"
+}

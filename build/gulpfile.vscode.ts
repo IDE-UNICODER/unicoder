@@ -22,6 +22,7 @@ import * as optimize from './lib/optimize.ts';
 import { inlineMeta } from './lib/inlineMeta.ts';
 import packageJson from '../package.json' with { type: 'json' };
 import product from '../product.json' with { type: 'json' };
+import embedded from '../product.sub.json' with { type: 'json' };
 import * as crypto from 'crypto';
 import * as i18n from './lib/i18n.ts';
 import { getProductionDependencies } from './lib/dependencies.ts';
@@ -281,6 +282,13 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
 				this.emit('data', file);
 			}));
 
+		const packageSubJsonStream = gulp.src(['package.sub.json'], { base: '.', allowEmpty: true })
+			.pipe(jsonEditor((json: Record<string, unknown>) => {
+				json.name = embedded.nameShort;
+				return json;
+			}));
+		const productSubJsonStream = gulp.src(['product.sub.json'], { base: '.', allowEmpty: true });
+
 		const license = gulp.src([product.licenseFileName, 'ThirdPartyNotices.txt', 'licenses/**'], { base: '.', allowEmpty: true });
 
 		// TODO the API should be copied to `out` during compile, not here
@@ -321,6 +329,8 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
 		let all = es.merge(
 			packageJsonStream,
 			productJsonStream,
+			packageSubJsonStream,
+			productSubJsonStream,
 			license,
 			api,
 			telemetry,

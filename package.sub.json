@@ -1,0 +1,7 @@
+{
+  "name": "sea-oss-dev",
+  "version": "1.110.0",
+  "main": "./out/main.js",
+  "type": "module",
+  "private": true
+}

@@ -28,6 +28,7 @@ function isDocumentSuffix(str?: string): str is DarwinDocumentSuffix {
 
 const root = path.dirname(path.dirname(import.meta.dirname));
 const product = JSON.parse(fs.readFileSync(path.join(root, 'product.json'), 'utf8'));
+const embedded = JSON.parse(fs.readFileSync(path.join(root, 'product.sub.json'), 'utf8'));
 const commit = getVersion(root);
 const useVersionedUpdate = process.platform === 'win32' && (product as typeof product & { win32VersionedUpdate?: boolean })?.win32VersionedUpdate;
 const versionedResourcesFolder = useVersionedUpdate ? commit!.substring(0, 10) : '';
@@ -101,11 +102,9 @@ function darwinBundleDocumentTypes(types: { [name: string]: string | string[] },
 	});
 }
 
-const { electronVersion, msBuildId } = util.getElectronVersion();
-
 export const config = {
-	version: electronVersion,
-	tag: product.electronRepository ? `v${electronVersion}-${msBuildId}` : undefined,
+	version: '39.5.1',
+	tag: 'v39.5.1-0004',
 	productAppName: product.nameLong,
 	companyName: 'Microsoft Corporation',
 	copyright: 'Copyright (C) 2026 Microsoft. All rights reserved',
@@ -200,11 +199,15 @@ export const config = {
 	}],
 	darwinForceDarkModeSupport: true,
 	darwinCredits: darwinCreditsTemplate ? Buffer.from(darwinCreditsTemplate({ commit: commit, date: new Date().toISOString() })) : undefined,
+	darwinMiniApp: true,
+	darwinMiniAppName: embedded.nameShort,
+	darwinMiniAppBundleIdentifier: embedded.darwinBundleIdentifier,
+	darwinMiniAppIcon: 'resources/darwin/code-miniapp.icns',
 	linuxExecutableName: product.applicationName,
 	winIcon: 'resources/win32/code.ico',
 	token: process.env['GITHUB_TOKEN'],
-	repo: product.electronRepository || undefined,
-	validateChecksum: true,
+	repo: 'deepak1556/electron-debug-version',
+	validateChecksum: false,
 	checksumFile: path.join(root, 'build', 'checksums', 'electron.txt'),
 	createVersionedResources: useVersionedUpdate,
 	productVersionString: versionedResourcesFolder,

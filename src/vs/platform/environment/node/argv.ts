@@ -204,6 +204,7 @@ export const OPTIONS: OptionDescriptions<Required<NativeParsedArgs>> = {
 	'enable-rdp-display-tracking': { type: 'boolean' },
 	'disable-layout-restore': { type: 'boolean' },
 	'disable-experiments': { type: 'boolean' },
+	'proto': { type: 'boolean', cat: 'o', description: localize('proto', "Launch the experimental lightweight application. (macOS only)") },
 
 	// chromium flags
 	'no-proxy-server': { type: 'boolean' },
